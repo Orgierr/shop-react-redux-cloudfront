@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     homeLink: {
-      color: '#f50057',
+      color: '#f50017',
       textDecoration: 'none'
     }
   }),
