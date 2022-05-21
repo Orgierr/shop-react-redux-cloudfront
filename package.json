@@ -51,7 +51,8 @@
     "@testing-library/user-event": "^7.1.2",
     "@types/jest": "^24.0.0",
     "serverless": "^3.17.0",
-    "serverless-finch": "^4.0.0"
+    "serverless-finch": "^4.0.0",
+    "serverless-single-page-app-plugin": "file:./.serverless_plugins/serverless-single-page-app-plugin"
   },
   "eslintConfig": {
     "extends": "react-app"
