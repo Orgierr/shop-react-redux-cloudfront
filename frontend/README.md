@@ -44,11 +44,11 @@ Update CloudFormation Stacks, build app, deploy app to aws.
 
 ### CloudFront URL
 
-https://d11ij6d4iafk22.cloudfront.net
+https://d1os5bohvv6py7.cloudfront.net
 
 ### S3-website
 
-http://task2-serve-spa-in-aws-bucket.s3-website-us-east-1.amazonaws.com/
+http://task2-serve-spa-in-aws-bucket.s3-website.eu-central-1.amazonaws.com/
 
 ## Learn More
 
