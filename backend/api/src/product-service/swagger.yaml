@@ -1,4 +1,6 @@
 openapi: 3.0.0
+servers:
+  - url: https://d1tkq3yjr2.execute-api.eu-central-1.amazonaws.com/dev
 components:
   schemas:
     GetProductRes:
@@ -63,7 +65,7 @@ components:
 info:
   title: Product-service
   description: Product-service OpenAPI
-  version: "2"
+  version: '2'
 paths:
   /products:
     get:
@@ -71,12 +73,12 @@ paths:
       summary: Get all products
       description: Get all products
       responses:
-        "200":
+        '200':
           description: Status 200 Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetProductsRes"
+                $ref: '#/components/schemas/GetProductsRes'
   /products/{productId}:
     get:
       operationId: getProductsById
@@ -90,15 +92,15 @@ paths:
             format: uuid
           required: true
       responses:
-        "200":
+        '200':
           description: Status 200 Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GetProductRes"
-        "404":
+                $ref: '#/components/schemas/GetProductRes'
+        '404':
           description: Status 404 Response
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NotFoundProductRes"
+                $ref: '#/components/schemas/NotFoundProductRes'

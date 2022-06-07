@@ -5,7 +5,8 @@
   "main": "handler.js",
   "scripts": {
     "test": "jest",
-    "swagger": "serverless openapi generate -o swagger.yml -f yml"
+    "deploy": "sls deploy",
+    "swagger": "serverless openapi generate -o swagger.yaml -f yaml"
   },
   "devDependencies": {
     "@babel/core": "^7.11.0",

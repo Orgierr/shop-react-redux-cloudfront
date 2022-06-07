@@ -1,0 +1,23 @@
+{
+  "name": "shop-react-redux-cloudfront",
+  "version": "1.0.0",
+  "description": "https://d1os5bohvv6py7.cloudfront.net",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "lerna run --concurrency 1 deploy",
+    "test": "lerna run --concurrency 1 test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Orgierr/shop-react-redux-cloudfront.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Orgierr/shop-react-redux-cloudfront/issues"
+  },
+  "homepage": "https://github.com/Orgierr/shop-react-redux-cloudfront#readme",
+  "devDependencies": {
+    "lerna": "^5.0.0"
+  }
+}
