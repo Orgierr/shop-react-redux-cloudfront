@@ -3,9 +3,9 @@
     "lib": ["ESNext"],
     "removeComments": true,
     "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "target": "ES2020",
+    "types": ["jest", "node"],
+    "esModuleInterop":true,
     "outDir": "lib"
   },
   "include": ["./**/*.ts"],
@@ -14,6 +14,7 @@
     ".serverless/**/*",
     ".webpack/**/*",
     "_warmup/**/*",
+    "**/*.test.ts",
     ".vscode/**/*"
   ]
 }
