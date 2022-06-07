@@ -23,13 +23,16 @@ functions:
           cors: true
           integration: lambda
           documentation: ${file(serverless.doc.yml):documentation.endpoints.getProductsList}
-  # goodbye:
-  #   handler: src/handler2.goodbye
-  #   events:
-  #     - http:
-  #         method: get
-  #         path: goodbye
-  #         integration: lambda
+  getProductsById:
+    handler: handler.getProductsById
+    events:
+      - http:
+          method: get
+          path: products/{productId}
+          cors: true
+          integration: lambda
+          documentation: ${file(serverless.doc.yml):documentation.endpoints.getProductsById}
+
 custom:
   webpack:
     webpackConfig: "webpack.config.js"
