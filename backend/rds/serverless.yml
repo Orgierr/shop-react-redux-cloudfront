@@ -1,0 +1,132 @@
+service: postgres-rds
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  profile: node-aws
+  stage: dev
+  region: eu-central-1
+
+custom:
+  POSTGRES:
+    VPC_CIDR: 10
+
+resources:
+  Resources:
+    PostgresVPC:
+      Type: AWS::EC2::VPC
+      Properties:
+        CidrBlock: ${self:custom.POSTGRES.VPC_CIDR}.0.0.0/16
+        EnableDnsSupport: true
+        EnableDnsHostnames: true
+        InstanceTenancy: default
+    PostgresSubnetA:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: PostgresVPC
+        CidrBlock: ${self:custom.POSTGRES.VPC_CIDR}.0.0.0/24
+        AvailabilityZone: ${self:provider.region}a
+    PostgresSubnetB:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: PostgresVPC
+        CidrBlock: ${self:custom.POSTGRES.VPC_CIDR}.0.1.0/24
+        AvailabilityZone: ${self:provider.region}b
+    PostgresSubnetC:
+      Type: AWS::EC2::Subnet
+      Properties:
+        VpcId:
+          Ref: PostgresVPC
+        CidrBlock: ${self:custom.POSTGRES.VPC_CIDR}.0.2.0/24
+        AvailabilityZone: ${self:provider.region}c
+    PostgresSubnetGroup:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupDescription: 'Postgres Subnet Group'
+        SubnetIds:
+          - Ref: PostgresSubnetA
+          - Ref: PostgresSubnetB
+          - Ref: PostgresSubnetC
+    RouteTableAssociationSubnetA:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId:
+          Ref: RouteTablePublic
+        SubnetId:
+          Ref: PostgresSubnetA
+    RouteTableAssociationSubnetB:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId:
+          Ref: RouteTablePublic
+        SubnetId:
+          Ref: PostgresSubnetB
+    RouteTableAssociationSubnetC:
+      Type: AWS::EC2::SubnetRouteTableAssociation
+      Properties:
+        RouteTableId:
+          Ref: RouteTablePublic
+        SubnetId:
+          Ref: PostgresSubnetC
+    PostgresSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Postgres shop security group
+        GroupName: postgres-security-group
+        VpcId:
+          Ref: PostgresVPC
+        SecurityGroupIngress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: -1
+            CidrIp: 0.0.0.0/0
+    RouteTablePublic:
+      Type: AWS::EC2::RouteTable
+      Properties:
+        VpcId:
+          Ref: PostgresVPC
+    PostgresVPCGA:
+      Type: AWS::EC2::VPCGatewayAttachment
+      Properties:
+        VpcId:
+          Ref: PostgresVPC
+        InternetGatewayId:
+          Ref: PostgresInternetGateway
+    PostgresInternetGateway:
+      Type: AWS::EC2::InternetGateway
+    RoutePublic:
+      Type: AWS::EC2::Route
+      Properties:
+        DestinationCidrBlock: 0.0.0.0/0
+        GatewayId:
+          Ref: PostgresInternetGateway
+        RouteTableId:
+          Ref: RouteTablePublic
+    PostgresShop:
+      Type: AWS::RDS::DBInstance
+      Properties:
+        DBInstanceIdentifier: postgres-shop-rds
+        MasterUsername: postgres
+        MasterUserPassword: postgres
+        EnableCloudwatchLogsExports:
+          - postgresql
+        AllocatedStorage: 20
+        BackupRetentionPeriod: 0
+        DBName: shopdb
+        DBInstanceClass: db.t3.micro
+        StorageEncrypted: false
+        EnablePerformanceInsights: false
+        CopyTagsToSnapshot: false
+        AutoMinorVersionUpgrade: false
+        # DeletionProtection: true
+        VPCSecurityGroups:
+          - !GetAtt PostgresSecurityGroup.GroupId
+        DBSubnetGroupName:
+          Ref: PostgresSubnetGroup
+        MonitoringInterval: 0
+        Engine: postgres
+        PubliclyAccessible: true

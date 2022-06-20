@@ -11,6 +11,7 @@ node_modules
 # production
 build
 .serverless
+.webpackCache
 
 # misc
 .DS_Store
