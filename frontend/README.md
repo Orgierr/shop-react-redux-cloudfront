@@ -42,13 +42,6 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 Update CloudFormation Stacks, build app, deploy app to aws.
 
-### CloudFront URL
-
-https://d1os5bohvv6py7.cloudfront.net
-
-### S3-website
-
-http://task2-serve-spa-in-aws-bucket.s3-website.eu-central-1.amazonaws.com/
 
 ## Learn More
 
