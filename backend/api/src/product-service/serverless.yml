@@ -20,9 +20,8 @@ functions:
       - http:
           method: get
           path: products
-          cors: true
-          # cors:
-          #   origin: ${self:custom.CLOUDFRONT}
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
           integration: lambda
   getProductsById:
     handler: handler.getProductsById
@@ -30,9 +29,8 @@ functions:
       - http:
           method: get
           path: products/{productId}
-          cors: true
-          # cors:
-          #   origin: ${self:custom.CLOUDFRONT}
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
           integration: lambda
   postProduct:
     handler: handler.postProduct
@@ -40,10 +38,8 @@ functions:
       - http:
           method: post
           path: products
-          cors: true
-
-          # cors:
-          #   origin: ${self:custom.CLOUDFRONT}
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
           integration: lambda
 custom:
   webpack:
