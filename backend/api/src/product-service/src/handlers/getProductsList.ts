@@ -1,9 +1,16 @@
-import { products } from '../common/products';
-import { ProductService } from '../db/db';
+import { APIGatewayEvent } from 'aws-lambda';
+import { StatusCodes } from 'http-status-codes';
+import { ServiceError } from '../errors/ServiceError';
+import { ProductRepository } from '../repository/productRepositoy';
 
-export const getProductsList = async () => {
-  return {
-    statusCode: 200,
-    body: JSON.stringify(await ProductService.findAll(products)),
-  };
+export const getProductsList = async (event?: APIGatewayEvent) => {
+  console.log(event);
+  try {
+    return {
+      statusCode: StatusCodes.OK,
+      body: JSON.stringify(await ProductRepository.findAll()),
+    };
+  } catch (error) {
+    return ServiceError.errorResponse(error);
+  }
 };

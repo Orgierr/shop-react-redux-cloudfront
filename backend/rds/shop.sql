@@ -14,9 +14,13 @@ create table stocks(
 );
 
 CREATE OR REPLACE FUNCTION add_examples(total int) returns void AS $$
+DECLARE
+  id uuid;
 BEGIN
 	FOR i IN 1..total LOOP
-		insert into products(title,description,price) values('Product Title'|| i::text,'This product ...'|| i::text,200+i);
+    id = uuid_generate_v4();
+	  insert into products(id,title,description,price) values(id,'Product Title'|| i::text,'This product ...'|| i::text,200+i);
+    insert into stocks(product_id,count) values(id,i);
 	END LOOP;
 END;
 $$ LANGUAGE plpgsql;

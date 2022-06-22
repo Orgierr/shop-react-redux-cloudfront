@@ -1,21 +1,27 @@
-import { ProductNotFoundError } from '../errors/not_found_product_error';
-import { products } from '../common/products';
-import { InternalServerError } from '../errors/internal_server_error';
-import { ProductService } from '../db/db';
-
-export const getProductsById = async (event: ProductPath) => {
+import { validate } from 'uuid';
+import { APIGatewayEvent } from 'aws-lambda';
+import { ServiceError } from '../errors/ServiceError';
+import { StatusCodes } from 'http-status-codes';
+import { ProductRepository } from '../repository/productRepositoy';
+export const getProductsById = async (
+  event?: APIGatewayEvent & ProductPath,
+) => {
+  console.log(event);
+  const productPath = event.path as unknown as ProductPath;
   try {
-    const product = await ProductService.findById(
-      products,
-      event.path.productId,
-    );
-    if (!product) throw new ProductNotFoundError();
+    if (!validate(productPath.productId))
+      throw new ServiceError({
+        statusCode: StatusCodes.BAD_REQUEST,
+        body: 'Product id is invalid',
+      });
+
     return {
-      statusCode: 200,
-      body: JSON.stringify(product),
+      statusCode: StatusCodes.OK,
+      body: JSON.stringify(
+        await ProductRepository.findById(productPath.productId),
+      ),
     };
   } catch (error) {
-    if (error instanceof ProductNotFoundError) return error.errorRes;
-    return new InternalServerError().errorRes;
+    ServiceError.errorResponse(error);
   }
 };

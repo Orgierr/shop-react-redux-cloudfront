@@ -12,7 +12,8 @@ node_modules
 build
 .serverless
 .webpackCache
-
+.webpack
+.env
 # misc
 .DS_Store
 .env.local

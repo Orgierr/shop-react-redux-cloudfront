@@ -1,5 +1,6 @@
 service: postgres-rds
 frameworkVersion: '3'
+useDotenv: true
 
 provider:
   name: aws
@@ -110,13 +111,13 @@ resources:
       Type: AWS::RDS::DBInstance
       Properties:
         DBInstanceIdentifier: postgres-shop-rds
-        MasterUsername: postgres
-        MasterUserPassword: postgres
+        MasterUsername: ${env:POSTGRES_USER}
+        MasterUserPassword: ${env:POSTGRES_PASSWORD}
         EnableCloudwatchLogsExports:
           - postgresql
         AllocatedStorage: 20
         BackupRetentionPeriod: 0
-        DBName: shopdb
+        DBName: ${env:POSTGRES_DB}
         DBInstanceClass: db.t3.micro
         StorageEncrypted: false
         EnablePerformanceInsights: false

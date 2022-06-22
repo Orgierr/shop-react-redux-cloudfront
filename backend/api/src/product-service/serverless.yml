@@ -5,8 +5,8 @@ package:
 # Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
-  - serverless-openapi-documentation
-
+  - serverless-offline
+  - serverless-dotenv-plugin
 provider:
   name: aws
   runtime: nodejs14.x
@@ -21,9 +21,8 @@ functions:
           method: get
           path: products
           cors:
-            origin: https://d1os5bohvv6py7.cloudfront.net
+            origin: ${self:custom.CLOUDFRONT}
           integration: lambda
-          documentation: ${file(serverless.doc.yml):documentation.endpoints.getProductsList}
   getProductsById:
     handler: handler.getProductsById
     events:
@@ -31,13 +30,22 @@ functions:
           method: get
           path: products/{productId}
           cors:
-            origin: https://d1os5bohvv6py7.cloudfront.net
+            origin: ${self:custom.CLOUDFRONT}
           integration: lambda
-          documentation: ${file(serverless.doc.yml):documentation.endpoints.getProductsById}
-
+  postProduct:
+    handler: handler.postProduct
+    events:
+      - http:
+          method: post
+          path: products
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
 custom:
   webpack:
     webpackConfig: 'webpack.config.js'
     packager: 'npm'
     includeModules: true
-  documentation: ${file(serverless.doc.yml):documentation}
+  CLOUDFRONT: d24quk142c4yyb.cloudfront.net
+  dotenv:
+    path: ../../../rds/.env

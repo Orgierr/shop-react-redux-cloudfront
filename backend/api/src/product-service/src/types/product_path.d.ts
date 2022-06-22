@@ -1,3 +1,3 @@
 interface ProductPath {
-  path: { productId: string };
+  productId: string;
 }

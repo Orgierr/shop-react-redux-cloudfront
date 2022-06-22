@@ -26,6 +26,20 @@ components:
             title:
               type: string
               example: ProductOne
+    PostProductReq:
+      properties:
+        count:
+          type: integer
+          example: 4
+        description:
+          type: string
+          example: Short Product Description1
+        price:
+          type: integer
+          example: 10
+        title:
+          type: string
+          example: ProductOne
     GetProductsRes:
       properties:
         statusCode:
@@ -79,6 +93,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetProductsRes'
+    post:
+      operationId: postProduct
+      summary: Creating a new item in a products table
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostProductReq'
+      responses:
+        '201':
+          description: Status 201 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProductRes'
+        '400':
+          description: Status 400 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundProductRes'
   /products/{productId}:
     get:
       operationId: getProductsById
