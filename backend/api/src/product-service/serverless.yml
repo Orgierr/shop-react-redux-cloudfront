@@ -23,6 +23,12 @@ functions:
           cors:
             origin: ${self:custom.CLOUDFRONT}
           integration: lambda
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+              500:
+                pattern: ''
   getProductsById:
     handler: handler.getProductsById
     events:
@@ -32,6 +38,16 @@ functions:
           cors:
             origin: ${self:custom.CLOUDFRONT}
           integration: lambda
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+              400:
+                pattern: ''
+              404:
+                pattern: ''
+              500:
+                pattern: ''
   postProduct:
     handler: handler.postProduct
     events:
@@ -41,6 +57,20 @@ functions:
           cors:
             origin: ${self:custom.CLOUDFRONT}
           integration: lambda
+          # request:
+          #   schemas:
+          #     application/json:
+          #       schema: ${file(product.json)}
+          #       name: PostCreateModel
+          #       description: 'Validation model for Creating Posts'
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+              400:
+                pattern: ''
+              500:
+                pattern: ''
 custom:
   webpack:
     webpackConfig: 'webpack.config.js'

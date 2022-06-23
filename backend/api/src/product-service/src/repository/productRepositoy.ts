@@ -1,4 +1,6 @@
+import { StatusCodes } from 'http-status-codes';
 import { QueryResult } from 'pg';
+import { ServiceError } from '../errors/ServiceError';
 import { pg } from '../pg/pg';
 
 export class ProductRepository {
@@ -19,7 +21,11 @@ export class ProductRepository {
       [id],
     );
     await client.end();
-    return products.rows[0];
+    if (products.rows[0]) return products.rows[0];
+    throw new ServiceError({
+      statusCode: StatusCodes.NOT_FOUND,
+      body: 'Product not found',
+    });
   }
   static async create(newProduct: Product) {
     const client = pg();

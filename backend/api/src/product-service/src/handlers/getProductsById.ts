@@ -22,6 +22,6 @@ export const getProductsById = async (
       ),
     };
   } catch (error) {
-    ServiceError.errorResponse(error);
+    return ServiceError.errorResponse(error);
   }
 };

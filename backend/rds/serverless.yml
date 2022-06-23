@@ -116,6 +116,7 @@ resources:
         EnableCloudwatchLogsExports:
           - postgresql
         AllocatedStorage: 20
+        StorageType: gp2
         BackupRetentionPeriod: 0
         DBName: ${env:POSTGRES_DB}
         DBInstanceClass: db.t3.micro

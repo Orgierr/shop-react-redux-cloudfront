@@ -23,6 +23,6 @@ export const postProduct = async (event: APIGatewayEvent) => {
       body: JSON.stringify(newProduct),
     };
   } catch (error) {
-    ServiceError.errorResponse(error);
+    return ServiceError.errorResponse(error);
   }
 };
