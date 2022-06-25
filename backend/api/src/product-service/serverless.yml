@@ -1,0 +1,81 @@
+service: product-service
+frameworkVersion: '3'
+package:
+  individually: true
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dotenv-plugin
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: eu-central-1
+
+functions:
+  getProductsList:
+    handler: handler.getProductsList
+    events:
+      - http:
+          method: get
+          path: products
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+              500:
+                pattern: ''
+  getProductsById:
+    handler: handler.getProductsById
+    events:
+      - http:
+          method: get
+          path: products/{productId}
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+              400:
+                pattern: ''
+              404:
+                pattern: ''
+              500:
+                pattern: ''
+  postProduct:
+    handler: handler.postProduct
+    events:
+      - http:
+          method: post
+          path: products
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+          # request:
+          #   schemas:
+          #     application/json:
+          #       schema: ${file(product.json)}
+          #       name: PostCreateModel
+          #       description: 'Validation model for Creating Posts'
+          response:
+            statusCodes:
+              200:
+                pattern: ''
+              400:
+                pattern: ''
+              500:
+                pattern: ''
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    packager: 'npm'
+    includeModules: true
+  CLOUDFRONT: https://d24quk142c4yyb.cloudfront.net
+  dotenv:
+    path: ../../../rds/.env
