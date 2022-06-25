@@ -3,9 +3,10 @@ import { APIGatewayEvent } from 'aws-lambda';
 import { ServiceError } from '../errors/ServiceError';
 import { StatusCodes } from 'http-status-codes';
 import { ProductRepository } from '../repository/productRepositoy';
+import { ServiceRes } from '../types/service_res';
 export const getProductsById = async (
   event?: APIGatewayEvent & ProductPath,
-) => {
+): Promise<ServiceRes> => {
   console.log(event);
   const productPath = event.path as unknown as ProductPath;
   try {

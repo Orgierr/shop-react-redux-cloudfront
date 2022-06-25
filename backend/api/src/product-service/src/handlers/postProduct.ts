@@ -4,7 +4,10 @@ import { APIGatewayEvent } from 'aws-lambda';
 import { ServiceError } from '../errors/ServiceError';
 import { StatusCodes } from 'http-status-codes';
 import { ProductRepository } from '../repository/productRepositoy';
-export const postProduct = async (event: APIGatewayEvent) => {
+import { ServiceRes } from '../types/service_res';
+export const postProduct = async (
+  event: APIGatewayEvent,
+): Promise<ServiceRes> => {
   console.log(event);
 
   try {

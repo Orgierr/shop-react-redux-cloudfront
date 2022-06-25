@@ -8,7 +8,7 @@ export class ProductRepository {
     const client = pg();
     await client.connect();
     const products: QueryResult<Product> = await client.query(
-      'select id,title,description,price,count from products left join stocks on product_id=id',
+      'select id,title,description,price,count from products join stocks on product_id=id',
     );
     await client.end();
     return products.rows;
@@ -17,7 +17,7 @@ export class ProductRepository {
     const client = pg();
     await client.connect();
     const products: QueryResult<Product> = await client.query(
-      'select id,title,description,price,count from products left join stocks on product_id=id where id=$1',
+      'select id,title,description,price,count from products join stocks on product_id=id where id=$1',
       [id],
     );
     await client.end();
