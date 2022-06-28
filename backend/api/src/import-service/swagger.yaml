@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: https://51uqaxo137.execute-api.eu-central-1.amazonaws.com/dev
+  - url: https://5oo81ag4l8.execute-api.eu-central-1.amazonaws.com/dev
 components:
   schemas:
     GetProductRes:
