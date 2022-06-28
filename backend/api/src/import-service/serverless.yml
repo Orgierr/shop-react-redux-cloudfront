@@ -1,0 +1,35 @@
+service: product-service
+frameworkVersion: '3'
+package:
+  individually: true
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: eu-central-1
+functions:
+  importProductsFile:
+    handler: handler.importProductsFile
+    events:
+      - http:
+          method: get
+          path: import
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude:
+      - aws-sdk
+    target: node14
+    platform: node
+    concurrency: 10
+  CLOUDFRONT: https://d24quk142c4yyb.cloudfront.net
