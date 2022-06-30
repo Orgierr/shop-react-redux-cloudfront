@@ -1,8 +1,8 @@
 service: import-service
 frameworkVersion: '3'
+useDotenv: true
 package:
   individually: true
-# Add the serverless-webpack plugin
 plugins:
   - serverless-esbuild
   - serverless-offline
@@ -11,6 +11,14 @@ provider:
   runtime: nodejs14.x
   stage: dev
   region: eu-central-1
+  environment:
+    BUCKET_NAME: ${env:BUCKET_NAME}
+    REGION: ${env:REGION}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 's3:PutObject'
+      Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/uploaded/*'
 functions:
   importProductsFile:
     handler: handler.importProductsFile
@@ -21,6 +29,17 @@ functions:
           cors:
             origin: ${self:custom.CLOUDFRONT}
           integration: lambda
+          request:
+            parameters:
+              querystrings:
+                fileName: true
+
+resources:
+  Resources:
+    ImportServiceBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:BUCKET_NAME}
 
 custom:
   esbuild:
