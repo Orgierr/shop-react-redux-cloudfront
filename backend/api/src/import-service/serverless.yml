@@ -40,6 +40,14 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${env:BUCKET_NAME}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - ${self:custom.CLOUDFRONT}
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - PUT
 
 custom:
   esbuild:
