@@ -17,8 +17,8 @@ provider:
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
-        - 's3:PutObject'
-      Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/uploaded/*'
+        - 's3:*'
+      Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/*'
 functions:
   importProductsFile:
     handler: handler.importProductsFile
@@ -33,7 +33,16 @@ functions:
             parameters:
               querystrings:
                 fileName: true
-
+  importFileParser:
+    handler: handler.importFileParser
+    events:
+      - s3:
+          bucket: ${env:BUCKET_NAME}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+            - suffix: .csv
+          existing: true
 resources:
   Resources:
     ImportServiceBucket:
