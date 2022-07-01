@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import { ServiceError } from '../errors/ServiceError';
 import { s3UploadUrl } from '../utils/signedUrl';
 export const importProductsFile = async (
-  event: APIGatewayEvent & QueryFileName,
+  event?: APIGatewayEvent & QueryFileName,
 ) => {
   console.log(event);
 
