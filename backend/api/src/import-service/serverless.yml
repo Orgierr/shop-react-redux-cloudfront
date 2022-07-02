@@ -1,0 +1,71 @@
+service: import-service
+frameworkVersion: '3'
+useDotenv: true
+package:
+  individually: true
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: eu-central-1
+  environment:
+    BUCKET_NAME: ${env:BUCKET_NAME}
+    REGION: ${env:REGION}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 's3:*'
+      Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/*'
+functions:
+  importProductsFile:
+    handler: handler.importProductsFile
+    events:
+      - http:
+          method: get
+          path: import
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+          request:
+            parameters:
+              querystrings:
+                fileName: true
+  importFileParser:
+    handler: handler.importFileParser
+    events:
+      - s3:
+          bucket: ${env:BUCKET_NAME}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+            - suffix: .csv
+          existing: true
+resources:
+  Resources:
+    ImportServiceBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${env:BUCKET_NAME}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - ${self:custom.CLOUDFRONT}
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - PUT
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude:
+      - aws-sdk
+    target: node14
+    platform: node
+    concurrency: 10
+  CLOUDFRONT: https://d24quk142c4yyb.cloudfront.net

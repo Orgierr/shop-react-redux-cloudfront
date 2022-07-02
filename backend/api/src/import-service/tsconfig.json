@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "lib": ["ESNext"],
+    "removeComments": true,
+    "moduleResolution": "node",
+    "target": "ES2020",
+    "esModuleInterop":true,
+    "outDir": "lib"
+  },
+  "include": ["./**/*.ts","**/*.test.ts"],
+  "exclude": [
+    "node_modules/**/*",
+    ".serverless/**/*",
+    ".webpack/**/*",
+    "_warmup/**/*",
+
+    ".vscode/**/*"
+  ]
+}
