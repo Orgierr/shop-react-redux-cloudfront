@@ -13,12 +13,8 @@ export const parseS3Object = async (bucketName: string, key: string) => {
   const file = await s3Client.send(command);
 
   const readStream = file.Body as ReadStream;
-  return new Promise((res, rej) => {
-    readStream
-      .pipe(csv())
-      .on('data', (data) => results.push(data))
-      .on('end', async () => {
-        res(results);
-      });
-  });
+  for await (const chunk of readStream.pipe(csv())) {
+    results.push(chunk);
+  }
+  return results;
 };
