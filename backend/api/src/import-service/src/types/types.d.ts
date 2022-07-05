@@ -7,3 +7,11 @@ interface ServiceRes {
 interface QueryFileName {
   query: { fileName: string };
 }
+
+interface Product {
+  count: number;
+  description: string;
+  id?: string;
+  price: number;
+  title: string;
+}

@@ -8,7 +8,7 @@ export const parseS3Object = async (bucketName: string, key: string) => {
     Bucket: bucketName,
     Key: key,
   };
-  const results = [];
+  const results: Product[] = [];
   const command = new GetObjectCommand(params);
   const file = await s3Client.send(command);
 

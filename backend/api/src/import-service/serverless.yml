@@ -14,11 +14,17 @@ provider:
   environment:
     BUCKET_NAME: ${env:BUCKET_NAME}
     REGION: ${env:REGION}
+    SQS_URL: !Ref ImportFileParserSQS
   iamRoleStatements:
     - Effect: 'Allow'
       Action:
         - 's3:*'
       Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/*'
+    - Effect: 'Allow'
+      Action:
+        - 'sqs:*'
+      Resource: !GetAtt [ImportFileParserSQS, Arn]
+
 functions:
   importProductsFile:
     handler: handler.importProductsFile
@@ -57,7 +63,10 @@ resources:
                 - '*'
               AllowedMethods:
                 - PUT
-
+    ImportFileParserSQS:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: import-file-parser-sqs
 custom:
   esbuild:
     bundle: true
