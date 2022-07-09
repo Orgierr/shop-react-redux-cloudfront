@@ -6,6 +6,7 @@ package:
 plugins:
   - serverless-esbuild
   - serverless-offline
+  - serverless-dotenv-plugin
 provider:
   name: aws
   runtime: nodejs14.x
@@ -15,15 +16,22 @@ provider:
     BUCKET_NAME: ${env:BUCKET_NAME}
     REGION: ${env:REGION}
     SQS_URL: !Ref ImportFileParserSQS
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - 's3:*'
-      Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/*'
-    - Effect: 'Allow'
-      Action:
-        - 'sqs:*'
-      Resource: !GetAtt [ImportFileParserSQS, Arn]
+    SNS_ARN: !Ref CreateProductTopicSNS
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action:
+            - 's3:*'
+          Resource: 'arn:aws:s3:::${env:BUCKET_NAME}/*'
+        - Effect: 'Allow'
+          Action:
+            - 'sqs:*'
+          Resource: !GetAtt [ImportFileParserSQS, Arn]
+        - Effect: 'Allow'
+          Action:
+            - 'sns:*'
+          Resource: !Ref CreateProductTopicSNS
 
 functions:
   importProductsFile:
@@ -49,8 +57,40 @@ functions:
             - prefix: uploaded/
             - suffix: .csv
           existing: true
+  # catalogBatchProcess:
+  #   handler: handler.catalogBatchProcess
+  #   events:
+  #     - sqs:
+  #         batchSize: 5
+  #         arn: !GetAtt [ImportFileParserSQS, Arn]
 resources:
   Resources:
+    CatalogBatchProcess:
+      Type: AWS::Lambda::Function
+      Properties:
+        FunctionName: catalogBatchProcess
+        Runtime: ${self:provider.runtime}
+        MemorySize: 1024
+        Handler: handler.catalogBatchProcess
+        Role: arn:aws:iam::813610760019:role/import-service-dev-eu-central-1-lambdaRole
+        Environment:
+          Variables:
+            REGION: ${env:REGION}
+            POSTGRES_DB: ${env:POSTGRES_DB}
+            POSTGRES_HOST: ${env:POSTGRES_HOST}
+            POSTGRES_PASSWORD: ${env:POSTGRES_PASSWORD}
+            POSTGRES_PORT: ${env:POSTGRES_PORT}
+            POSTGRES_USER: ${env:POSTGRES_USER}
+            SNS_ARN: !Ref CreateProductTopicSNS
+        Code:
+          S3Bucket: import-service-dev-serverlessdeploymentbucket-11x876s17n66f
+          S3Key: serverless/import-service/dev/1657366093749-2022-07-09T11:28:13.749Z/catalogBatchProcess.zip
+    CatalogBatchProcessEvent:
+      Type: AWS::Lambda::EventSourceMapping
+      Properties:
+        BatchSize: 5
+        FunctionName: !Ref CatalogBatchProcess
+        EventSourceArn: !GetAtt [ImportFileParserSQS, Arn]
     ImportServiceBucket:
       Type: AWS::S3::Bucket
       Properties:
@@ -66,7 +106,27 @@ resources:
     ImportFileParserSQS:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: import-file-parser-sqs
+        QueueName: catalogItemsQueue
+    CreateProductTopicSNS:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+    CreateProductTopicSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        TopicArn: !Ref CreateProductTopicSNS
+        Endpoint: test1@net.com
+        FilterPolicy: ${file(./FilterPolicy.json)}
+    CreateProductTopicSubscriptionPrice:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        TopicArn: !Ref CreateProductTopicSNS
+        Endpoint: test2@net.com
+        FilterPolicy:
+          price:
+            - 214
 custom:
   esbuild:
     bundle: true
@@ -78,3 +138,5 @@ custom:
     platform: node
     concurrency: 10
   CLOUDFRONT: https://d24quk142c4yyb.cloudfront.net
+  dotenv:
+    path: ../../../rds/.env
