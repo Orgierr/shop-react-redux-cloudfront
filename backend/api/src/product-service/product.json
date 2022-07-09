@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "title": "Product Schema",
+  "required": [
+    "count",
+    "description",
+    "price",
+    "title"
+  ],
+  "properties": {
+    "count": {
+      "type": "integer"
+    },
+    "price": {
+      "type": "integer"
+    },
+    "title": {
+      "type": "integer"
+    },
+    "description": {
+      "type": "integer"
+    }
+  }
+}
