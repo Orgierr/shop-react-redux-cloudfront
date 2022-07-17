@@ -47,6 +47,12 @@ functions:
             parameters:
               querystrings:
                 fileName: true
+          authorizer:
+            name: basicAuthorizer
+            arn:
+            resultTtlInSeconds: 0
+            identitySource: method.request.header.Authorization
+            type: token
   importFileParser:
     handler: handler.importFileParser
     events:
@@ -57,40 +63,14 @@ functions:
             - prefix: uploaded/
             - suffix: .csv
           existing: true
-  # catalogBatchProcess:
-  #   handler: handler.catalogBatchProcess
-  #   events:
-  #     - sqs:
-  #         batchSize: 5
-  #         arn: !GetAtt [ImportFileParserSQS, Arn]
+  catalogBatchProcess:
+    handler: handler.catalogBatchProcess
+    events:
+      - sqs:
+          batchSize: 5
+          arn: !GetAtt [ImportFileParserSQS, Arn]
 resources:
   Resources:
-    CatalogBatchProcess:
-      Type: AWS::Lambda::Function
-      Properties:
-        FunctionName: catalogBatchProcess
-        Runtime: ${self:provider.runtime}
-        MemorySize: 1024
-        Handler: handler.catalogBatchProcess
-        Role: arn:aws:iam::813610760019:role/import-service-dev-eu-central-1-lambdaRole
-        Environment:
-          Variables:
-            REGION: ${env:REGION}
-            POSTGRES_DB: ${env:POSTGRES_DB}
-            POSTGRES_HOST: ${env:POSTGRES_HOST}
-            POSTGRES_PASSWORD: ${env:POSTGRES_PASSWORD}
-            POSTGRES_PORT: ${env:POSTGRES_PORT}
-            POSTGRES_USER: ${env:POSTGRES_USER}
-            SNS_ARN: !Ref CreateProductTopicSNS
-        Code:
-          S3Bucket: import-service-dev-serverlessdeploymentbucket-11x876s17n66f
-          S3Key: serverless/import-service/dev/1657366093749-2022-07-09T11:28:13.749Z/catalogBatchProcess.zip
-    CatalogBatchProcessEvent:
-      Type: AWS::Lambda::EventSourceMapping
-      Properties:
-        BatchSize: 5
-        FunctionName: !Ref CatalogBatchProcess
-        EventSourceArn: !GetAtt [ImportFileParserSQS, Arn]
     ImportServiceBucket:
       Type: AWS::S3::Bucket
       Properties:
