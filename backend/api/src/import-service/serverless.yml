@@ -49,7 +49,7 @@ functions:
                 fileName: true
           authorizer:
             name: basicAuthorizer
-            arn:
+            arn: arn:aws:lambda:eu-central-1:813610760019:function:authorization-service-dev-basicAuthorizer
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             type: token

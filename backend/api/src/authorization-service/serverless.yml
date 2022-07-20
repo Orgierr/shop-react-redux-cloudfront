@@ -19,17 +19,6 @@ provider:
 functions:
   basicAuthorizer:
     handler: handler.basicAuthorizer
-    events:
-      - http:
-          method: get
-          path: import
-          cors:
-            origin: ${self:custom.CLOUDFRONT}
-          integration: lambda
-          request:
-            parameters:
-              querystrings:
-                fileName: true
 
 custom:
   esbuild:
@@ -41,6 +30,3 @@ custom:
     target: node14
     platform: node
     concurrency: 10
-  CLOUDFRONT: https://d24quk142c4yyb.cloudfront.net
-  dotenv:
-    path: ../../../rds/.env
