@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { productSchema } from '../joi/productSchema';
-import { APIGatewayEvent } from 'aws-lambda';
+import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { ServiceError } from '../errors/ServiceError';
 import { StatusCodes } from 'http-status-codes';
 import { ProductRepository } from '../repository/productRepositoy';
@@ -21,6 +21,7 @@ export const postProduct = async (
 
     newProduct.id = uuidv4();
     await ProductRepository.create(newProduct);
+
     return {
       statusCode: StatusCodes.CREATED,
       body: JSON.stringify(newProduct),

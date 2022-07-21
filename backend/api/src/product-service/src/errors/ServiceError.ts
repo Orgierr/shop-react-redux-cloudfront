@@ -10,6 +10,8 @@ export class ServiceError extends Error {
   }
   static errorResponse(error): ServiceRes {
     if (error instanceof ServiceError) return error.response;
+    console.log(error);
+
     return new ServiceError({
       statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
       body: ReasonPhrases.INTERNAL_SERVER_ERROR,
