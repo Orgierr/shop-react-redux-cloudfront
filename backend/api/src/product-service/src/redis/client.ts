@@ -3,9 +3,9 @@ import * as redisStore from 'cache-manager-ioredis';
 
 export const redisClient = caching({
   store: redisStore,
-  host: 'redis-12325.c300.eu-central-1-1.ec2.cloud.redislabs.com', // default value
-  port: 12325, // default value
-  password: 'XeruKlu6oD1e6BfbmNMFcqqSKxbQBO0B',
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+  password: process.env.REDIS_PASSWORD,
   db: 0,
   ttl: 120,
 });
