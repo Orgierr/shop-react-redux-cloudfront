@@ -29,8 +29,7 @@ functions:
       - http:
           method: get
           path: products
-          cors:
-            origin: ${self:custom.CLOUDFRONT}
+          cors: true
           integration: lambda
           # authorizer:
           #   name: PrivateAuthorizer
@@ -44,8 +43,7 @@ functions:
       - http:
           method: get
           path: products/{productId}
-          cors:
-            origin: ${self:custom.CLOUDFRONT}
+          cors: true
           integration: lambda
   postProduct:
     handler: handler.postProduct
@@ -53,8 +51,7 @@ functions:
       - http:
           method: post
           path: products
-          cors:
-            origin: ${self:custom.CLOUDFRONT}
+          cors: true
           integration: lambda
           # request:
           #   schemas:

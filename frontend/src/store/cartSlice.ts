@@ -62,7 +62,7 @@ export const addToCart =
       cart: { items },
     } = getState();
     await axios.put(
-      `${API_PATHS.cart}/profile/cart`,
+      `${API_PATHS.cart}/cart`,
       { items },
       {
         headers: {
@@ -79,7 +79,7 @@ export const removeFromCart =
       cart: { items },
     } = getState();
     await axios.put(
-      `${API_PATHS.cart}/profile/cart`,
+      `${API_PATHS.cart}/cart`,
       { items },
       {
         headers: {
@@ -95,7 +95,7 @@ export const clearCart = () => async (dispatch: any, getState: any) => {
     cart: { items },
   } = getState();
   await axios.put(
-    `${API_PATHS.cart}/profile/cart`,
+    `${API_PATHS.cart}/cart`,
     { items },
     {
       headers: {

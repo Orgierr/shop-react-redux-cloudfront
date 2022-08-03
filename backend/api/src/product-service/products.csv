@@ -1,5 +1,5 @@
-price,title,description
-211,Product Title1,This product ...11
-2012,Product Title2,This product ...12
-2013,Product Title3,This product ...13
-2014,Product Title4,This product ...14
+price,title,description,img,count
+211,Product Title1,This product ...11,https://nodejs-aws-store-products.s3.eu-central-1.amazonaws.com/jon-tyson-pFnvc1Cu6zI-unsplash.jpg,1
+2012,Product Title2,This product ...12,https://nodejs-aws-store-products.s3.eu-central-1.amazonaws.com/jon-tyson-pFnvc1Cu6zI-unsplash.jpg,2
+2013,Product Title3,This product ...13,https://nodejs-aws-store-products.s3.eu-central-1.amazonaws.com/jon-tyson-pFnvc1Cu6zI-unsplash.jpg,3
+2014,Product Title4,This product ...14,https://nodejs-aws-store-products.s3.eu-central-1.amazonaws.com/jon-tyson-pFnvc1Cu6zI-unsplash.jpg,4

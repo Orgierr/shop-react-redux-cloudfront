@@ -2,22 +2,29 @@ import { StatusCodes } from 'http-status-codes';
 import { QueryResult } from 'pg';
 import { ServiceError } from '../errors/ServiceError';
 import { pg } from '../pg/pg';
+import { redisClient } from '../redis/client';
 
 export class ProductRepository {
   static async findAll(): Promise<Product[]> {
+    const allProducts = await redisClient.get<string>('all');
+
+    if (allProducts) {
+      return JSON.parse(allProducts);
+    }
     const client = pg();
     await client.connect();
     const products: QueryResult<Product> = await client.query(
-      'select id,title,description,price,count from products join stocks on product_id=id',
+      'select id,title,description,price,count,img from products join stocks on product_id=id',
     );
     await client.end();
+    await redisClient.set('all', JSON.stringify(products.rows));
     return products.rows;
   }
   static async findById(id: string): Promise<Product> {
     const client = pg();
     await client.connect();
     const products: QueryResult<Product> = await client.query(
-      'select id,title,description,price,count from products join stocks on product_id=id where id=$1',
+      'select id,title,description,price,count,img from products join stocks on product_id=id where id=$1',
       [id],
     );
     await client.end();
@@ -33,12 +40,13 @@ export class ProductRepository {
     try {
       await client.query('BEGIN');
       await client.query(
-        'insert into products(id,description,price,title) values($1,$2,$3,$4)',
+        'insert into products(id,description,price,title,img) values($1,$2,$3,$4,$5)',
         [
           newProduct.id,
           newProduct.description,
           newProduct.price,
           newProduct.title,
+          newProduct.img,
         ],
       );
       await client.query('insert into stocks(product_id,count) values($1,$2)', [

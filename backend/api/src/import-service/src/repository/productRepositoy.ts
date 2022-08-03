@@ -8,7 +8,7 @@ export class ProductRepository {
     const client = pg();
     await client.connect();
     const products: QueryResult<Product> = await client.query(
-      'select id,title,description,price,count from products join stocks on product_id=id',
+      'select id,title,description,price,count,img from products join stocks on product_id=id',
     );
     await client.end();
     return products.rows;
@@ -17,7 +17,7 @@ export class ProductRepository {
     const client = pg();
     await client.connect();
     const products: QueryResult<Product> = await client.query(
-      'select id,title,description,price,count from products join stocks on product_id=id where id=$1',
+      'select id,title,description,price,count,img from products join stocks on product_id=id where id=$1',
       [id],
     );
     await client.end();
@@ -33,12 +33,13 @@ export class ProductRepository {
     try {
       await client.query('BEGIN');
       await client.query(
-        'insert into products(id,description,price,title) values($1,$2,$3,$4)',
+        'insert into products(id,description,price,title,img) values($1,$2,$3,$4,$5)',
         [
           newProduct.id,
           newProduct.description,
           newProduct.price,
           newProduct.title,
+          newProduct.img,
         ],
       );
       await client.query('insert into stocks(product_id,count) values($1,$2)', [
