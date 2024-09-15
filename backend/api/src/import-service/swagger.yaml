@@ -1,0 +1,44 @@
+openapi: 3.0.0
+servers:
+  - url: https://3p2e7gmgbh.execute-api.eu-central-1.amazonaws.com/dev
+components:
+  securitySchemes:
+    basicAuthorizer:
+      type: http
+      scheme: basic
+  schemas:
+    GetRes:
+      properties:
+        statusCode:
+          type: integer
+          example: 200
+        body:
+          type: string
+          example: http://test.com
+
+info:
+  title: Import-service
+  description: Import-service OpenAPI
+  version: '2'
+paths:
+  /import:
+    get:
+      security:
+        - basicAuthorizer: []
+      operationId: getProductsList
+      summary: Get all products
+      description: Get all products
+      parameters:
+        - in: query
+          name: fileName
+          schema:
+            type: string
+            example: file.csv
+          required: true
+      responses:
+        '200':
+          description: Status 200 Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetRes'

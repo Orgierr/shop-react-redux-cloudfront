@@ -1,0 +1,121 @@
+service: product-service
+frameworkVersion: '3'
+useDotenv: true
+
+package:
+  individually: true
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dotenv-plugin
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: eu-central-1
+functions:
+  # getCognitoIdToken:
+  #   handler: handler.getCognitoIdToken
+  #   events:
+  #     - http:
+  #         method: get
+  #         path: cognito/{code}
+  #         cors: true
+  #         integration: lambda
+  getProductsList:
+    handler: handler.getProductsList
+    events:
+      - http:
+          method: get
+          path: products
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+          # authorizer:
+          #   name: PrivateAuthorizer
+          #   type: COGNITO_USER_POOLS
+          #   arn: !GetAtt [ProductsUserPool, Arn]
+          #   claims:
+          #     - email
+  getProductsById:
+    handler: handler.getProductsById
+    events:
+      - http:
+          method: get
+          path: products/{productId}
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+  postProduct:
+    handler: handler.postProduct
+    events:
+      - http:
+          method: post
+          path: products
+          cors:
+            origin: ${self:custom.CLOUDFRONT}
+          integration: lambda
+          # request:
+          #   schemas:
+          #     application/json:
+          #       schema: ${file(product.json)}
+          #       name: PostCreateModel
+          #       description: 'Validation model for Creating Posts'
+          response:
+            statusCodes:
+              201:
+                pattern: ''
+              400:
+                pattern: '.*"statusCode": 400,.*' # JSON response
+                # template: $input.path("$.errorMessage") # JSON return object
+
+# resources:
+#   Resources:
+#     ProductsUserPool:
+#       Type: AWS::Cognito::UserPool
+#       Properties:
+#         UserPoolName: products-auth-pool
+#         Schema:
+#           - Name: email
+#             Required: true
+#             Mutable: true
+#         Policies:
+#           PasswordPolicy:
+#             MinimumLength: 8
+#         AutoVerifiedAttributes: ['email']
+#     ProductsUserClient:
+#       Type: AWS::Cognito::UserPoolClient
+#       Properties:
+#         ClientName: user-pool-ui
+#         GenerateSecret: true
+#         UserPoolId: !Ref ProductsUserPool
+#         SupportedIdentityProviders:
+#           - COGNITO
+#         CallbackURLs:
+#           - ${env:REDIRECT_URI}
+#         AllowedOAuthFlowsUserPoolClient: true
+#         AllowedOAuthFlows:
+#           - code
+#           - implicit
+#         AllowedOAuthScopes:
+#           - email
+#           - openid
+#         AccessTokenValidity: 5
+#         IdTokenValidity: 5
+#         ExplicitAuthFlows:
+#           - 'ADMIN_NO_SRP_AUTH'
+#     ProductsUserDomain:
+#       Type: AWS::Cognito::UserPoolDomain
+#       Properties:
+#         UserPoolId: !Ref ProductsUserPool
+#         Domain: ${env:DOMAIN}
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    packager: 'npm'
+    includeModules: true
+  CLOUDFRONT: https://d24quk142c4yyb.cloudfront.net
+  dotenv:
+    path: ../../../rds/.env

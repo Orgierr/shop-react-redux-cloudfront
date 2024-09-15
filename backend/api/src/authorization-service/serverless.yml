@@ -1,0 +1,32 @@
+service: authorization-service
+frameworkVersion: '3'
+useDotenv: true
+package:
+  individually: true
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: eu-central-1
+  environment:
+    NAME: ${env:NAME}
+    PASSWORD: ${env:PASSWORD}
+
+functions:
+  basicAuthorizer:
+    handler: handler.basicAuthorizer
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude:
+      - aws-sdk
+    target: node14
+    platform: node
+    concurrency: 10
